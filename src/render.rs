@@ -148,8 +148,12 @@ fn render_objects(
 
         let Vec3 { x, y, .. } = transform.translation();
 
-        let x = x as i32;
-        let y = y as i32;
+        let x = x.clamp(i32::MIN as f32, i32::MAX as f32) as i32;
+        let y = y.clamp(i32::MIN as f32, i32::MAX as f32) as i32;
+
+        if !(-64..240).contains(&x) && !(-64..160).contains(&y) {
+            continue;
+        }
 
         let position = agb::fixnum::Vector2D { x, y };
 
