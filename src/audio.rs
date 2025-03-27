@@ -9,45 +9,56 @@ pub struct AgbSoundPlugin {
     /// Otherwise, you must [enable](agb::sound::dmg::Sound::enable) it yourself
     /// using the [`Sound`] resource.
     pub enable_dmg: bool,
+    /// If `Some(...)`, will enable the mixer subsystem at the provided frequency.
+    pub mixer_frequency: Option<agb::sound::mixer::Frequency>,
 }
 
 impl Plugin for AgbSoundPlugin {
-    fn build(&self, _app: &mut App) {}
+    fn build(&self, app: &mut App) {
+        app.add_systems(
+            PostUpdate,
+            |mixer: Option<NonSendMut<agb::sound::mixer::Mixer>>| {
+                if let Some(mut mixer) = mixer {
+                    mixer.frame();
+                }
+            },
+        );
+    }
 
     fn finish(&self, app: &mut App) {
-        let Some(sound) = app
-            .world_mut()
-            .remove_non_send_resource::<agb::sound::dmg::Sound>()
-        else {
-            return;
-        };
-
-        let Some(mixer) = app
-            .world_mut()
-            .remove_non_send_resource::<agb::sound::mixer::MixerController>()
-        else {
-            return;
-        };
-
         if self.enable_dmg {
-            sound.enable();
+            if let Some(sound) = app
+                .world_mut()
+                .remove_non_send_resource::<agb::sound::dmg::Sound>()
+            {
+                sound.enable();
+
+                let channel1 = Channel::<1>::from_sound(&sound);
+                let channel2 = Channel::<2>::from_sound(&sound);
+                let noise = Noise(sound.noise());
+
+                app.insert_resource(channel1)
+                    .insert_resource(channel2)
+                    .insert_resource(noise);
+            }
         }
 
-        let channel1 = Channel::<1>::from_sound(&sound);
-        let channel2 = Channel::<2>::from_sound(&sound);
-        let noise = Noise(sound.noise());
+        if let Some(frequency) = self.mixer_frequency {
+            if let Some(mixer_controller) = app
+                .world_mut()
+                .remove_non_send_resource::<agb::sound::mixer::MixerController>()
+            {
+                let mixer_controller = Box::leak(Box::new(mixer_controller));
 
-        app.insert_resource(MixerController(mixer))
-            .insert_resource(Sound(sound))
-            .insert_resource(channel1)
-            .insert_resource(channel2)
-            .insert_resource(noise);
+                let mut mixer = mixer_controller.mixer(frequency);
+
+                mixer.enable();
+
+                app.insert_non_send_resource(mixer);
+            }
+        }
     }
 }
-
-/// Manages access to the Game Boy Advance's direct sound mixer for playing raw wav files.
-#[derive(Resource, Deref, DerefMut)]
-pub struct MixerController(agb::sound::mixer::MixerController);
 
 /// Manages access to the Game Boy Advance's beeps and boops sound hardware as part of the
 /// original Game Boy's sound chip (the DMG).

@@ -46,5 +46,5 @@ pub mod prelude {
     //! Recommended imports.
 
     #[doc(hidden)]
-    pub use crate::{AgbPlugin, Channel, MixerController, Noise, SaveManager};
+    pub use crate::{AgbPlugin, Channel, Noise, SaveManager};
 }

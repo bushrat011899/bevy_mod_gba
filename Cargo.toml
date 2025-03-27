@@ -1,6 +1,6 @@
 [package]
 name = "bevy_mod_gba"
-version = "0.1.0-rc.5"
+version = "0.1.0-rc.6"
 edition = "2024"
 keywords = ["game", "gamedev", "bevy", "no_std", "gameboy"]
 license = "MIT OR Apache-2.0"
