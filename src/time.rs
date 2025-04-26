@@ -1,12 +1,12 @@
 use core::{sync::atomic::Ordering, time::Duration};
 
 use bevy::{
-    platform_support::{sync::atomic::AtomicU32, time::Instant},
+    platform::{sync::atomic::AtomicU32, time::Instant},
     prelude::*,
 };
 
 /// Sets up [timers](Timer) 2 & 3 as [resources](Resource).
-/// Uses [`Timer 2`](Timer) to provide [`Instant`](bevy::platform_support::time::Instant)
+/// Uses [`Timer 2`](Timer) to provide [`Instant`](bevy::platform::time::Instant)
 /// with reliable timing information.
 #[derive(Default)]
 pub struct AgbTimePlugin;

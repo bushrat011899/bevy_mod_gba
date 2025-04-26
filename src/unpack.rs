@@ -1,6 +1,6 @@
 use core::sync::atomic::Ordering;
 
-use bevy::{platform_support::sync::atomic::AtomicBool, prelude::*};
+use bevy::{platform::sync::atomic::AtomicBool, prelude::*};
 
 use super::*;
 

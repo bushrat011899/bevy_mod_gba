@@ -4,7 +4,7 @@
 )]
 
 use bevy::{
-    platform_support::sync::{Arc, Weak},
+    platform::sync::{Arc, Weak},
     prelude::*,
 };
 use log::warn;

@@ -1,6 +1,6 @@
 [package]
 name = "bevy_mod_gba"
-version = "0.1.0-rc.6"
+version = "0.1.0"
 edition = "2024"
 keywords = ["game", "gamedev", "bevy", "no_std", "gameboy"]
 license = "MIT OR Apache-2.0"
@@ -9,11 +9,7 @@ rust-version = "1.85.0"
 description = "Platform support for the GameBoy Advance with the Bevy game engine"
 
 [dependencies]
-bevy = { version = "0.16.0-rc.2", default-features = false, features = [
-  "libm",
-  "bevy_color",
-  "bevy_state",
-] }
+bevy = { version = "0.16.0", default-features = false }
 agb = { version = "0.21.1" }
 log = { version = "0.4", default-features = false }
 
