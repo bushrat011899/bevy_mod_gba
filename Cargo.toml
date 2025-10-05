@@ -8,13 +8,20 @@ repository = "https://github.com/bushrat011899/bevy_mod_gba"
 rust-version = "1.85.0"
 description = "Platform support for the GameBoy Advance with the Bevy game engine"
 
+[lib]
+name = "bevy_mod_gba"
+test = false
+bench = false
+
 [dependencies]
-bevy = { version = "0.16.0", default-features = false }
+bevy = { git = "https://github.com/simgine/bevy", branch = "fix-entities-reservation", default-features = false }
 agb = { version = "0.21.1" }
 log = { version = "0.4", default-features = false }
 
 [dev-dependencies]
-bevy = { version = "0.16.0", default-features = false, features = ["bevy_state"] }
+bevy = { git = "https://github.com/simgine/bevy", branch = "fix-entities-reservation", default-features = false, features = [
+  "bevy_state",
+] }
 
 [lints.clippy]
 doc_markdown = "warn"

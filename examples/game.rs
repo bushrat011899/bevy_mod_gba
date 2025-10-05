@@ -22,7 +22,7 @@ use bevy::{
     app::PanicHandlerPlugin,
     diagnostic::{DiagnosticsPlugin, FrameCountPlugin},
     input::{
-        InputSystem,
+        InputSystems,
         gamepad::{gamepad_connection_system, gamepad_event_processing_system},
     },
     prelude::*,
@@ -69,7 +69,7 @@ pub extern "C" fn main() -> ! {
             gamepad_connection_system,
             gamepad_event_processing_system.after(gamepad_connection_system),
         )
-            .in_set(InputSystem),
+            .in_set(InputSystems),
     );
 
     // Unfortunately, we currently don't have a first-party abstraction for assets or rendering.
