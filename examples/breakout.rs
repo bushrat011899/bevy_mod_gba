@@ -10,7 +10,7 @@ use bevy::{
     app::PanicHandlerPlugin,
     diagnostic::{DiagnosticsPlugin, FrameCountPlugin},
     input::{
-        InputSystem,
+        InputSystems,
         gamepad::{gamepad_connection_system, gamepad_event_processing_system},
     },
     math::{
@@ -80,11 +80,11 @@ pub extern "C" fn main() -> ! {
                 gamepad_connection_system,
                 gamepad_event_processing_system.after(gamepad_connection_system),
             )
-                .in_set(InputSystem),
+                .in_set(InputSystems),
         )
         .insert_resource(Score(0))
         .init_non_send_resource::<Option<Sprites>>()
-        .add_event::<CollisionEvent>()
+        .add_message::<CollisionEvent>()
         .add_systems(Startup, (setup_video, load_sprites, setup).chain())
         .add_systems(
             Update,
@@ -153,7 +153,7 @@ struct Ball;
 #[derive(Component, Deref, DerefMut)]
 struct Velocity(Vec2);
 
-#[derive(Event, Default)]
+#[derive(Message, Default)]
 struct CollisionEvent;
 
 #[derive(Component)]
@@ -231,9 +231,6 @@ impl Wall {
 // This resource tracks the game's score
 #[derive(Resource, Deref, DerefMut)]
 struct Score(usize);
-
-#[derive(Component)]
-struct ScoreboardUi;
 
 // Add the game's entities to our world
 fn setup(mut commands: Commands, sprites: NonSend<Option<Sprites>>) {
@@ -363,7 +360,7 @@ fn check_for_collisions(
     mut score: ResMut<Score>,
     ball_query: Single<(&mut Velocity, &Transform), With<Ball>>,
     collider_query: Query<(Entity, &Transform, Option<&Brick>, &Collider)>,
-    mut collision_events: EventWriter<CollisionEvent>,
+    mut collision_events: MessageWriter<CollisionEvent>,
 ) {
     let (mut ball_velocity, ball_transform) = ball_query.into_inner();
 
@@ -422,7 +419,7 @@ fn check_for_collisions(
 }
 
 fn play_collision_sound(
-    mut collision_events: EventReader<CollisionEvent>,
+    mut collision_events: MessageReader<CollisionEvent>,
     mut mixer: NonSendMut<agb::sound::mixer::Mixer>,
 ) {
     static COLLISION_SOUND: &[u8] = agb::include_wav!("assets/sounds/breakout_collision.wav");
