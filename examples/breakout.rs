@@ -7,19 +7,11 @@
 
 use agb::display::{object::SpriteLoader, palette16::Palette16};
 use bevy::{
-    app::PanicHandlerPlugin,
-    diagnostic::{DiagnosticsPlugin, FrameCountPlugin},
-    input::{
-        InputSystems,
-        gamepad::{gamepad_connection_system, gamepad_event_processing_system},
-    },
     math::{
         bounding::{Aabb2d, BoundingCircle, BoundingVolume, IntersectsVolume},
         ops,
     },
     prelude::*,
-    state::app::StatesPlugin,
-    time::TimePlugin,
 };
 use bevy_mod_gba::{AgbSoundPlugin, Sprite, SpriteHandles, Video, prelude::*};
 
@@ -65,23 +57,7 @@ pub extern "C" fn main() -> ! {
             mixer_frequency: Some(agb::sound::mixer::Frequency::Hz10512),
             ..default()
         }))
-        .add_plugins((
-            PanicHandlerPlugin,
-            TaskPoolPlugin::default(),
-            FrameCountPlugin,
-            TimePlugin,
-            TransformPlugin,
-            DiagnosticsPlugin,
-            StatesPlugin,
-        ))
-        .add_systems(
-            PreUpdate,
-            (
-                gamepad_connection_system,
-                gamepad_event_processing_system.after(gamepad_connection_system),
-            )
-                .in_set(InputSystems),
-        )
+        .add_plugins(DefaultPlugins)
         .insert_resource(Score(0))
         .init_non_send_resource::<Option<Sprites>>()
         .add_message::<CollisionEvent>()

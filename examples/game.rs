@@ -18,17 +18,7 @@ use agb::{
     display::{object::SpriteLoader, palette16::Palette16},
     sound::dmg::EnvelopeSettings,
 };
-use bevy::{
-    app::PanicHandlerPlugin,
-    diagnostic::{DiagnosticsPlugin, FrameCountPlugin},
-    input::{
-        InputSystems,
-        gamepad::{gamepad_connection_system, gamepad_event_processing_system},
-    },
-    prelude::*,
-    state::app::StatesPlugin,
-    time::TimePlugin,
-};
+use bevy::prelude::*;
 use bevy_mod_gba::{AgbSoundPlugin, Sprite, SpriteHandles, Video, prelude::*};
 use log::info;
 
@@ -49,28 +39,7 @@ pub extern "C" fn main() -> ! {
     }));
 
     // Next we can add any Bevy plugins we like.
-    // TODO: Used `DefaultPlugins` instead of this explicit list.
-    // `DefaultPlugins` includes `InputPlugin` which is problematic on the GameBoy Advance. See below.
-    app.add_plugins((
-        PanicHandlerPlugin,
-        TaskPoolPlugin::default(),
-        FrameCountPlugin,
-        TimePlugin,
-        TransformPlugin,
-        DiagnosticsPlugin,
-        StatesPlugin,
-    ));
-
-    // TODO: Type registration information from `InputPlugin` causes an OOM error.
-    // So we manually register the parts of this plugin that we need and ignore the rest.
-    app.add_systems(
-        PreUpdate,
-        (
-            gamepad_connection_system,
-            gamepad_event_processing_system.after(gamepad_connection_system),
-        )
-            .in_set(InputSystems),
-    );
+    app.add_plugins(DefaultPlugins);
 
     // Unfortunately, we currently don't have a first-party abstraction for assets or rendering.
     // This means getting assets, and rendering them must be done somewhat manually.
