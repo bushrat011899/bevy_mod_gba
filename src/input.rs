@@ -1,8 +1,6 @@
 use bevy::{
     input::gamepad::{
-        GamepadAxisChangedEvent, GamepadButtonChangedEvent, GamepadButtonStateChangedEvent,
-        GamepadConnection, GamepadConnectionEvent, GamepadEvent, RawGamepadAxisChangedEvent,
-        RawGamepadButtonChangedEvent, RawGamepadEvent,
+        GamepadConnection, GamepadConnectionEvent, RawGamepadButtonChangedEvent, RawGamepadEvent,
     },
     prelude::*,
 };
@@ -16,14 +14,6 @@ pub struct AgbInputPlugin;
 impl Plugin for AgbInputPlugin {
     fn build(&self, app: &mut App) {
         app.insert_resource(ButtonController::new())
-            .add_message::<GamepadEvent>()
-            .add_message::<GamepadConnectionEvent>()
-            .add_message::<GamepadButtonChangedEvent>()
-            .add_message::<GamepadButtonStateChangedEvent>()
-            .add_message::<GamepadAxisChangedEvent>()
-            .add_message::<RawGamepadEvent>()
-            .add_message::<RawGamepadAxisChangedEvent>()
-            .add_message::<RawGamepadButtonChangedEvent>()
             .add_systems(PreUpdate, update_gamepad);
     }
 
