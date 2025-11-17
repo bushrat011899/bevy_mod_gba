@@ -14,12 +14,12 @@ test = false
 bench = false
 
 [dependencies]
-bevy = { git = "https://github.com/simgine/bevy", branch = "fix-entities-reservation", default-features = false }
+bevy = { version = "0.17.3", default-features = false }
 agb = { version = "0.21.1" }
 log = { version = "0.4", default-features = false }
 
 [dev-dependencies]
-bevy = { git = "https://github.com/simgine/bevy", branch = "fix-entities-reservation", default-features = false, features = [
+bevy = { version = "0.17.3", default-features = false, features = [
   "bevy_state",
 ] }
 
