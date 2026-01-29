@@ -16,14 +16,14 @@ pub struct AgbInputPlugin;
 impl Plugin for AgbInputPlugin {
     fn build(&self, app: &mut App) {
         app.insert_resource(ButtonController::new())
-            .add_event::<GamepadEvent>()
-            .add_event::<GamepadConnectionEvent>()
-            .add_event::<GamepadButtonChangedEvent>()
-            .add_event::<GamepadButtonStateChangedEvent>()
-            .add_event::<GamepadAxisChangedEvent>()
-            .add_event::<RawGamepadEvent>()
-            .add_event::<RawGamepadAxisChangedEvent>()
-            .add_event::<RawGamepadButtonChangedEvent>()
+            .add_message::<GamepadEvent>()
+            .add_message::<GamepadConnectionEvent>()
+            .add_message::<GamepadButtonChangedEvent>()
+            .add_message::<GamepadButtonStateChangedEvent>()
+            .add_message::<GamepadAxisChangedEvent>()
+            .add_message::<RawGamepadEvent>()
+            .add_message::<RawGamepadAxisChangedEvent>()
+            .add_message::<RawGamepadButtonChangedEvent>()
             .add_systems(PreUpdate, update_gamepad);
     }
 
@@ -41,8 +41,8 @@ impl Plugin for AgbInputPlugin {
             },
         );
 
-        world.send_event::<RawGamepadEvent>(event.clone().into());
-        world.send_event::<GamepadConnectionEvent>(event);
+        world.write_message::<RawGamepadEvent>(event.clone().into());
+        world.write_message::<GamepadConnectionEvent>(event);
     }
 }
 
@@ -65,8 +65,8 @@ pub struct GameBoyGamepad {}
 
 fn update_gamepad(
     mut manager: ResMut<ButtonController>,
-    mut events: EventWriter<RawGamepadEvent>,
-    mut button_events: EventWriter<RawGamepadButtonChangedEvent>,
+    mut events: MessageWriter<RawGamepadEvent>,
+    mut button_events: MessageWriter<RawGamepadButtonChangedEvent>,
     gamepad: Single<Entity, With<GameBoyGamepad>>,
 ) {
     manager.update();

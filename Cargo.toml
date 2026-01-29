@@ -9,7 +9,7 @@ rust-version = "1.85.0"
 description = "Platform support for the GameBoy Advance with the Bevy game engine"
 
 [dependencies]
-bevy = { version = "0.16.0", default-features = false }
+bevy = { version = "0.18.0", default-features = false, features=["gamepad"] }
 agb = { version = "0.21.1" }
 log = { version = "0.4", default-features = false }
 
