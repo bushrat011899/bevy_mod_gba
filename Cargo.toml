@@ -14,7 +14,7 @@ agb = { version = "0.21.1" }
 log = { version = "0.4", default-features = false }
 
 [dev-dependencies]
-bevy = { version = "0.16.0", default-features = false, features = ["bevy_state"] }
+bevy = { version = "0.18.0", default-features = false, features = ["bevy_state"] }
 
 [lints.clippy]
 doc_markdown = "warn"

@@ -10,7 +10,7 @@ use bevy::{
     app::PanicHandlerPlugin,
     diagnostic::{DiagnosticsPlugin, FrameCountPlugin},
     input::{
-        InputSystem,
+        InputSystems,
         gamepad::{gamepad_connection_system, gamepad_event_processing_system},
     },
     math::{
@@ -80,22 +80,13 @@ pub extern "C" fn main() -> ! {
                 gamepad_connection_system,
                 gamepad_event_processing_system.after(gamepad_connection_system),
             )
-                .in_set(InputSystem),
+                .in_set(InputSystems),
         )
+        .add_observer(play_collision_sound)
         .insert_resource(Score(0))
         .init_non_send_resource::<Option<Sprites>>()
-        .add_event::<CollisionEvent>()
         .add_systems(Startup, (setup_video, load_sprites, setup).chain())
-        .add_systems(
-            Update,
-            (
-                apply_velocity,
-                move_paddle,
-                check_for_collisions,
-                play_collision_sound,
-            )
-                .chain(),
-        )
+        .add_systems(Update, (apply_velocity, move_paddle, check_for_collisions))
         .run();
 
     loop {}
@@ -237,7 +228,7 @@ struct ScoreboardUi;
 
 // Add the game's entities to our world
 fn setup(mut commands: Commands, sprites: NonSend<Option<Sprites>>) {
-    let sprites = sprites.as_ref().unwrap();
+    let sprites = Option::as_ref(&sprites).unwrap();
 
     let square = sprites.square.clone();
     let paddle = sprites.paddle.clone();
@@ -363,7 +354,6 @@ fn check_for_collisions(
     mut score: ResMut<Score>,
     ball_query: Single<(&mut Velocity, &Transform), With<Ball>>,
     collider_query: Query<(Entity, &Transform, Option<&Brick>, &Collider)>,
-    mut collision_events: EventWriter<CollisionEvent>,
 ) {
     let (mut ball_velocity, ball_transform) = ball_query.into_inner();
 
@@ -385,7 +375,7 @@ fn check_for_collisions(
 
         if let Some(collision) = collision {
             // Writes a collision event so that other systems can react to the collision
-            collision_events.write_default();
+            commands.trigger(CollisionEvent);
 
             // Bricks should be despawned and increment the scoreboard on collision
             if maybe_brick.is_some() {
@@ -422,17 +412,13 @@ fn check_for_collisions(
 }
 
 fn play_collision_sound(
-    mut collision_events: EventReader<CollisionEvent>,
+    _collision_event: On<CollisionEvent>,
     mut mixer: NonSendMut<agb::sound::mixer::Mixer>,
 ) {
     static COLLISION_SOUND: &[u8] = agb::include_wav!("assets/sounds/breakout_collision.wav");
 
-    if !collision_events.is_empty() {
-        let sound_channel = agb::sound::mixer::SoundChannel::new(COLLISION_SOUND);
-        mixer.play_sound(sound_channel);
-    }
-
-    collision_events.clear();
+    let sound_channel = agb::sound::mixer::SoundChannel::new(COLLISION_SOUND);
+    mixer.play_sound(sound_channel);
 }
 
 #[derive(Debug, PartialEq, Eq, Copy, Clone)]

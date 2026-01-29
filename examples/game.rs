@@ -22,7 +22,7 @@ use bevy::{
     app::PanicHandlerPlugin,
     diagnostic::{DiagnosticsPlugin, FrameCountPlugin},
     input::{
-        InputSystem,
+        InputSystems,
         gamepad::{gamepad_connection_system, gamepad_event_processing_system},
     },
     prelude::*,
@@ -69,7 +69,7 @@ pub extern "C" fn main() -> ! {
             gamepad_connection_system,
             gamepad_event_processing_system.after(gamepad_connection_system),
         )
-            .in_set(InputSystem),
+            .in_set(InputSystems),
     );
 
     // Unfortunately, we currently don't have a first-party abstraction for assets or rendering.
@@ -159,7 +159,7 @@ struct Jumps {
 }
 
 fn spawn_player(mut commands: Commands, sprites: NonSend<Option<Sprites>>) {
-    let sprites = sprites.as_ref().unwrap();
+    let sprites = Option::as_ref(&sprites).unwrap();
     commands.spawn((
         Transform::from_xyz(98., 128., 0.),
         sprites.player.clone(),
