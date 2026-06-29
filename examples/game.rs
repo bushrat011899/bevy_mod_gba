@@ -128,7 +128,7 @@ struct Jumps {
 }
 
 fn spawn_player(mut commands: Commands, sprites: NonSend<Option<Sprites>>) {
-    let sprites = sprites.as_ref().unwrap();
+    let sprites = Option::as_ref(&sprites).unwrap();
     commands.spawn((
         Transform::from_xyz(98., 128., 0.),
         sprites.player.clone(),

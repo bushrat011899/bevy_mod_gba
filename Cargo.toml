@@ -1,6 +1,6 @@
 [package]
 name = "bevy_mod_gba"
-version = "0.2.0"
+version = "0.3.0"
 edition = "2024"
 keywords = ["game", "gamedev", "bevy", "no_std", "gameboy"]
 license = "MIT OR Apache-2.0"
@@ -14,12 +14,12 @@ test = false
 bench = false
 
 [dependencies]
-bevy = { version = "0.17.3", default-features = false }
+bevy = { version = "0.18.0", default-features = false, features = ["gamepad"] }
 agb = { version = "0.21.1" }
 log = { version = "0.4", default-features = false }
 
 [dev-dependencies]
-bevy = { version = "0.17.3", default-features = false, features = [
+bevy = { version = "0.18.0", default-features = false, features = [
   "bevy_state",
 ] }
 

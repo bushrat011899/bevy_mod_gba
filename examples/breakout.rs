@@ -210,7 +210,7 @@ struct Score(usize);
 
 // Add the game's entities to our world
 fn setup(mut commands: Commands, sprites: NonSend<Option<Sprites>>) {
-    let sprites = sprites.as_ref().unwrap();
+    let sprites = Option::as_ref(&sprites).unwrap();
 
     let square = sprites.square.clone();
     let paddle = sprites.paddle.clone();
